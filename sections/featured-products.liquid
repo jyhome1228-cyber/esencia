@@ -1,0 +1,60 @@
+<section style="padding:80px 0;">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:32px;">
+      <div>
+        <p class="product-card__eyebrow">TARGETED SOLUTIONS</p>
+        <h2 style="margin:0;font-size:32px;letter-spacing:-.03em;">Shop the Collection</h2>
+      </div>
+      <a href="/collections/all" style="font-size:14px;font-weight:600;">Shop All</a>
+    </div>
+
+    {% assign selected_collection = collections[section.settings.collection] %}
+    {% if selected_collection != blank and selected_collection.products_count > 0 %}
+      <div class="product-grid">
+        {% for product in selected_collection.products limit: section.settings.limit %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="product-grid">
+        {% assign preview_handles = 'rejuvenating-serum,brightening-serum,calming-serum,hydrating-serum' | split: ',' %}
+        {% for handle in preview_handles %}
+          <article class="product-card">
+            <div class="product-card__media">{% render 'esencia-product-image', handle: handle, alt: handle %}</div>
+            <div class="product-card__meta">
+              <p class="product-card__eyebrow">SERUM</p>
+              <h3 class="product-card__title">{{ handle | replace: '-', ' ' | capitalize }}</h3>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured products",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products to show",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured products"
+    }
+  ]
+}
+{% endschema %}
