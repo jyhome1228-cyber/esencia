@@ -13,13 +13,7 @@ window.ESENCIA_PRODUCTS=[
 {handle:'amino-balance-cleanser',category:'Cleanser',solution:'Calming',name:'Amino-Balance™ Cleanser',complex:'Low-pH Amino Acid Daily Cleansing',image:'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103326-product-image-2-17b55c79.webp',desc:'Gentle Daily Cleansing · Barrier Support',benefits:'A gentle low-pH cleansing system that removes daily impurities while helping skin remain soft and comfortable.',ingredients:['Sodium Cocoyl Glycinate','Sodium Lauroyl Glutamate','Betaine','Panthenol','Allantoin','Glycerin'],use:'Wet skin, take an adequate amount and massage gently in circular motions. Rinse with lukewarm water. Use morning and evening.'}
 ];
 
-window.ESENCIA_SOLUTIONS={
-Hydrating:{subtitle:'Hydration · Barrier',tech:'HYDRA-CERA™',copy:'Layered hydration and barrier-support care designed for skin that feels dry, tight or depleted.'},
-Calming:{subtitle:'Sensitivity · Balance',tech:'CICA-BISA™',copy:'Comfort-focused care that helps support sensitive skin, moisture balance and a calmer-looking condition.'},
-Brightening:{subtitle:'Tone · Radiance',tech:'NIA-TXA™',copy:'Targeted tone care for dullness, uneven-looking skin and a clearer, more luminous complexion.'},
-Clarifying:{subtitle:'Pores · Sebum',tech:'ACID COMPLEX™',copy:'Refining care for visible pores, excess sebum and rough texture while respecting everyday skin balance.'},
-Rejuvenating:{subtitle:'Firmness · Revitalization',tech:'PGA-PEPTIDE™ / PEPTI-LIFT™',copy:'Firming and revitalizing care that supports elasticity, resilience, moisture and smoother-looking skin.'}
-};
+window.ESENCIA_SOLUTIONS={Hydrating:{subtitle:'Hydration · Barrier',tech:'HYDRA-CERA™',copy:'Layered hydration and barrier-support care designed for skin that feels dry, tight or depleted.'},Calming:{subtitle:'Sensitivity · Balance',tech:'CICA-BISA™',copy:'Comfort-focused care that helps support sensitive skin, moisture balance and a calmer-looking condition.'},Brightening:{subtitle:'Tone · Radiance',tech:'NIA-TXA™',copy:'Targeted tone care for dullness, uneven-looking skin and a clearer, more luminous complexion.'},Clarifying:{subtitle:'Pores · Sebum',tech:'ACID COMPLEX™',copy:'Refining care for visible pores, excess sebum and rough texture while respecting everyday skin balance.'},Rejuvenating:{subtitle:'Firmness · Revitalization',tech:'PGA-PEPTIDE™ / PEPTI-LIFT™',copy:'Firming and revitalizing care that supports elasticity, resilience, moisture and smoother-looking skin.'}};
 
 window.productCardHTML=function(p){return `<a class="product-card" href="product.html?product=${encodeURIComponent(p.handle)}"><div class="product-media">${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy">`:`<div class="placeholder"><div><strong>${p.name}</strong><br>Product image coming soon</div></div>`}</div><div class="product-meta"><div class="product-type">${p.category} · ${p.solution}</div><div class="product-name">${p.name}</div><div class="product-sub">${p.desc}</div></div></a>`};
 window.renderProductCards=function(target,filter){const el=document.querySelector(target);if(!el)return;const list=ESENCIA_PRODUCTS.filter(p=>!filter||filter(p));el.innerHTML=list.map(productCardHTML).join('')};
@@ -27,28 +21,7 @@ window.renderFeaturedProducts=function(target,handles){const el=document.querySe
 
 window.initShopPage=function(){const root=document.querySelector('#product-grid');if(!root)return;const params=new URLSearchParams(location.search);let current=params.get('category')||'All';const tabs=[...document.querySelectorAll('[data-product-filter]')];const draw=()=>{tabs.forEach(t=>t.classList.toggle('active',t.dataset.productFilter===current));renderProductCards('#product-grid',p=>current==='All'||p.category===current)};tabs.forEach(t=>t.addEventListener('click',()=>{current=t.dataset.productFilter;history.replaceState(null,'',current==='All'?'shop.html':`shop.html?category=${encodeURIComponent(current)}`);draw()}));draw()};
 
-window.initSolutionsPage=function(){
-  const params=new URLSearchParams(location.search);
-  const initial=params.get('solution');
-  const title=document.querySelector('[data-solution-title]');
-  const copy=document.querySelector('[data-solution-copy]');
-  const apply=(name)=>{
-    if(!ESENCIA_SOLUTIONS[name])return;
-    if(title)title.textContent=name;
-    if(copy)copy.textContent=ESENCIA_SOLUTIONS[name].copy;
-    renderProductCards('#solution-products',p=>p.solution===name);
-    document.querySelectorAll('[data-solution-card]').forEach(card=>card.classList.toggle('selected',card.dataset.solutionCard===name));
-  };
-  document.querySelectorAll('[data-solution-link]').forEach(link=>link.addEventListener('click',e=>{
-    e.preventDefault();
-    const name=link.dataset.solutionLink;
-    history.replaceState(null,'',`solutions.html?solution=${encodeURIComponent(name)}#solution-products`);
-    apply(name);
-    document.querySelector('#solution-products')?.scrollIntoView({behavior:'smooth',block:'start'});
-  }));
-  if(initial&&ESENCIA_SOLUTIONS[initial])apply(initial);
-  else {if(title)title.textContent='Find Your Skin Solution';if(copy)copy.textContent='Choose one of the five concern-led directions above to see the matching products and technology system.';renderProductCards('#solution-products');}
-};
+window.initSolutionsPage=function(){const params=new URLSearchParams(location.search);const initial=params.get('solution');const title=document.querySelector('[data-solution-title]');const copy=document.querySelector('[data-solution-copy]');const apply=name=>{if(!ESENCIA_SOLUTIONS[name])return;if(title)title.textContent=name;if(copy)copy.textContent=ESENCIA_SOLUTIONS[name].copy;renderProductCards('#solution-products-grid',p=>p.solution===name);document.querySelectorAll('[data-solution-card]').forEach(card=>card.classList.toggle('selected',card.dataset.solutionCard===name));};document.querySelectorAll('[data-solution-link]').forEach(link=>link.addEventListener('click',e=>{e.preventDefault();const name=link.dataset.solutionLink;history.replaceState(null,'',`solutions.html?solution=${encodeURIComponent(name)}#solution-products`);apply(name);document.querySelector('#solution-products')?.scrollIntoView({behavior:'smooth',block:'start'});}));if(initial&&ESENCIA_SOLUTIONS[initial])apply(initial);else{if(title)title.textContent='Find Your Skin Solution';if(copy)copy.textContent='Choose one of the five concern-led directions above to see the matching products and technology system.';renderProductCards('#solution-products-grid');}};
 
 window.initSearchPage=function(){const form=document.querySelector('[data-search-form]'),input=document.querySelector('[data-search-input]'),results=document.querySelector('#search-results'),count=document.querySelector('[data-search-count]');if(!form||!input||!results)return;const params=new URLSearchParams(location.search);input.value=params.get('q')||'';const run=()=>{const q=input.value.trim().toLowerCase();const list=q?ESENCIA_PRODUCTS.filter(p=>[p.name,p.category,p.solution,p.complex,p.desc].join(' ').toLowerCase().includes(q)):[];results.innerHTML=list.map(productCardHTML).join('');if(count)count.textContent=q?`${list.length} results for “${input.value.trim()}”`:'Search products, categories or skin concerns.'};form.addEventListener('submit',e=>{e.preventDefault();history.replaceState(null,'',input.value.trim()?`search.html?q=${encodeURIComponent(input.value.trim())}`:'search.html');run()});run()};
 
