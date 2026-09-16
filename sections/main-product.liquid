@@ -1,0 +1,99 @@
+<section class="container product">
+  <div class="product-gallery">
+    {% if product.media.size > 0 %}
+      {% for media in product.media %}
+        <div class="product-gallery__item">
+          {% if media.media_type == 'image' %}
+            {{ media | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '600,900,1200,1400', alt: product.title }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="product-gallery__item">
+        {% render 'esencia-product-image', handle: product.handle, alt: product.title %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="product-info">
+    {% if product.metafields.custom.skin_solution != blank %}
+      <p class="product-info__eyebrow">{{ product.metafields.custom.skin_solution }}</p>
+    {% endif %}
+    <h1>{{ product.title }}</h1>
+
+    {% if product.metafields.custom.complex_technology != blank %}
+      <p class="product-info__description"><strong>{{ product.metafields.custom.complex_technology }}</strong></p>
+    {% endif %}
+
+    {% if product.description != blank %}
+      <div class="product-info__description rte">{{ product.description }}</div>
+    {% endif %}
+
+    <div class="product-info__price">{{ product.selected_or_first_available_variant.price | money }}</div>
+
+    {% form 'product', product, class: 'product-form' %}
+      {% if product.variants.size > 1 %}
+        <label for="Variant-{{ section.id }}">Option</label>
+        <select id="Variant-{{ section.id }}" name="id">
+          {% for variant in product.variants %}
+            <option value="{{ variant.id }}"{% if variant == product.selected_or_first_available_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>
+              {{ variant.title }} — {{ variant.price | money }}
+            </option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      {% endif %}
+
+      <label for="Quantity-{{ section.id }}">Quantity</label>
+      <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1">
+
+      <button class="button button--primary" type="submit" name="add"{% unless product.selected_or_first_available_variant.available %} disabled{% endunless %}>
+        {% if product.selected_or_first_available_variant.available %}Add to Cart{% else %}Sold Out{% endif %}
+      </button>
+    {% endform %}
+  </div>
+</section>
+
+<section class="product-details">
+  <div class="container product-details__grid">
+    {% if product.metafields.custom.key_benefits != blank %}
+      <div>
+        <p class="product-card__eyebrow">BENEFITS</p>
+        <h2>Key Benefits</h2>
+        <div class="rte">{{ product.metafields.custom.key_benefits | metafield_tag }}</div>
+      </div>
+    {% endif %}
+
+    {% if product.metafields.custom.key_ingredients != blank %}
+      <div>
+        <p class="product-card__eyebrow">FORMULA</p>
+        <h2>Key Ingredients</h2>
+        <div class="rte">{{ product.metafields.custom.key_ingredients | metafield_tag }}</div>
+      </div>
+    {% endif %}
+
+    {% if product.metafields.custom.how_to_use != blank %}
+      <div>
+        <p class="product-card__eyebrow">ROUTINE</p>
+        <h2>How to Use</h2>
+        <div class="rte">{{ product.metafields.custom.how_to_use | metafield_tag }}</div>
+      </div>
+    {% endif %}
+
+    {% if product.metafields.custom.recommended_for != blank %}
+      <div>
+        <p class="product-card__eyebrow">RECOMMENDED</p>
+        <h2>Recommended For</h2>
+        <div class="rte">{{ product.metafields.custom.recommended_for | metafield_tag }}</div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main product",
+  "settings": []
+}
+{% endschema %}
