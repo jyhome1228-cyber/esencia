@@ -1,0 +1,26 @@
+{% liquid
+  assign fallback_url = ''
+  case handle
+    when 'rejuvenating-serum'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070712-image-20-0c0ae70b.webp'
+    when 'brightening-serum'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070713-image-21-9c7af505.webp'
+    when 'calming-serum'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070713-image-22-cb093b37.webp'
+    when 'hydrating-serum'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070713-image-23-b0a09146.webp'
+    when 'clarifying-serum'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070714-image-24-bfee518b.webp'
+    when 'brightening-cream'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070715-product-image-5-1-2d1e3a39.webp'
+    when 'night-cream'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070717-product-image-5-2-7bec66fc.webp'
+    when 'pepti-lift-firming-cream'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070719-product-image-5-3-3e6f5601.webp'
+    when 'hydra-cera-cream'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070721-product-image-5-b6154be6.webp'
+  endcase
+%}
+{% if fallback_url != blank %}
+  <img src="{{ fallback_url }}" alt="{{ alt | default: handle | escape }}" loading="lazy" width="1200" height="1500">
+{% endif %}
