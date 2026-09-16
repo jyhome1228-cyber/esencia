@@ -1,0 +1,18 @@
+<article class="product-card">
+  <a href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    <div class="product-card__media">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360,540,720,900', alt: product.title }}
+      {% else %}
+        {% render 'esencia-product-image', handle: product.handle, alt: product.title %}
+      {% endif %}
+    </div>
+    <div class="product-card__meta">
+      {% if product.metafields.custom.skin_solution != blank %}
+        <p class="product-card__eyebrow">{{ product.metafields.custom.skin_solution }}</p>
+      {% endif %}
+      <h3 class="product-card__title">{{ product.title }}</h3>
+      <div class="product-card__price">{{ product.price | money }}</div>
+    </div>
+  </a>
+</article>
