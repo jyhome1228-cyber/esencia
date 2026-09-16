@@ -1,0 +1,25 @@
+<section style="padding:96px 0 80px;">
+  <div class="container" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center;">
+    <div>
+      <p class="product-card__eyebrow">ESEN’CIA</p>
+      <h1 style="margin:0;font-size:clamp(40px,5vw,64px);line-height:1.05;letter-spacing:-.05em;max-width:680px;">Essential Science<br>for Healthy Skin</h1>
+      <p style="margin:24px 0 0;max-width:600px;color:var(--muted);font-size:18px;">Skin-first skincare powered by targeted science, balanced formulation and everyday comfort.</p>
+      <div style="display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;">
+        <a class="button button--primary" style="display:inline-flex;align-items:center;" href="/collections/all">Shop ESEN’CIA</a>
+        <a class="button" style="display:inline-flex;align-items:center;border:1px solid var(--border);background:#fff;" href="/pages/science">Discover Our Science</a>
+      </div>
+    </div>
+    <div style="min-height:520px;background:var(--surface-soft);display:grid;place-items:center;padding:32px;">
+      <div style="max-width:360px;width:100%;">
+        {% render 'esencia-product-image', handle: 'hydrating-serum', alt: 'ESEN’CIA Hydrating Serum' %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home hero",
+  "settings": []
+}
+{% endschema %}
