@@ -1,0 +1,45 @@
+<section class="container" style="padding:64px 0 96px;">
+  <p class="product-card__eyebrow">SHOPPING BAG</p>
+  <h1 style="margin:0 0 32px;font-size:40px;letter-spacing:-.04em;">Cart</h1>
+
+  {% if cart.item_count == 0 %}
+    <p>Your cart is empty.</p>
+    <a class="button button--primary" style="display:inline-flex;align-items:center;margin-top:16px;" href="/collections/all">Continue Shopping</a>
+  {% else %}
+    <form action="{{ routes.cart_url }}" method="post">
+      <div style="display:grid;gap:24px;">
+        {% for item in cart.items %}
+          <div style="display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--border);">
+            <a href="{{ item.url }}" style="background:var(--surface-soft);">
+              {% if item.image %}{{ item.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: item.product.title }}{% endif %}
+            </a>
+            <div>
+              <a href="{{ item.url }}" style="font-weight:600;">{{ item.product.title }}</a>
+              <div style="margin-top:6px;color:var(--muted);font-size:14px;">{{ item.final_price | money }}</div>
+              <label for="updates_{{ item.key }}" style="display:block;margin-top:12px;font-size:12px;">Quantity</label>
+              <input id="updates_{{ item.key }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0" style="width:88px;min-height:40px;border:1px solid var(--border);border-radius:8px;padding:0 12px;">
+            </div>
+            <div style="font-weight:600;">{{ item.final_line_price | money }}</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top:32px;display:flex;justify-content:flex-end;">
+        <div style="width:min(100%,420px);">
+          <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:600;margin-bottom:20px;"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+          <div style="display:grid;gap:10px;">
+            <button class="button" type="submit" name="update" style="border:1px solid var(--border);background:#fff;">Update Cart</button>
+            <button class="button button--primary" type="submit" name="checkout">Checkout</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Main cart",
+  "settings": []
+}
+{% endschema %}
