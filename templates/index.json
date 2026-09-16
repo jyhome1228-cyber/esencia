@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "hero": {
+      "type": "home-hero",
+      "settings": {}
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": {
+        "limit": 4
+      }
+    }
+  },
+  "order": ["hero", "featured"]
+}
