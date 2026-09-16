@@ -21,85 +21,19 @@ Clarifying:{subtitle:'Pores · Sebum',tech:'ACID COMPLEX™',copy:'Refining care
 Rejuvenating:{subtitle:'Firmness · Revitalization',tech:'PGA-PEPTIDE™ / PEPTI-LIFT™',copy:'Firming and revitalizing care that supports elasticity, resilience, moisture and smoother-looking skin.'}
 };
 
-window.ESENCIA_TECH={
-'HYDRA-CERA™':{tag:'Barrier Hydration',title:'HYDRA-CERA™',copy:'A barrier-focused hydration platform pairing ceramide and lipid support with multi-layer humectants for lasting moisture and comfort.',actives:'Ceramides · Cholesterol · Polyglutamic Acid',result:'Deep hydration · Barrier support'},
-'CICA-BISA™':{tag:'Skin Recovery',title:'CICA-BISA™',copy:'A soothing recovery platform designed around Centella-derived actives, ectoin and beta-glucan for sensitive or stressed skin.',actives:'TECA · Ectoin · Beta-Glucan',result:'Calming · Balance support'},
-'NIA-TXA™':{tag:'Tone Radiance',title:'NIA-TXA™',copy:'A targeted brightening platform combining complementary tone-care ingredients for dullness and uneven-looking pigmentation.',actives:'Niacinamide · Tranexamic Acid · Alpha-Arbutin',result:'Brightening · Even-looking tone'},
-'ACID COMPLEX™':{tag:'Pore Purifying',title:'ACID COMPLEX™',copy:'A refining acid platform created to address buildup, excess sebum, visible pores and rough-feeling texture.',actives:'Mandelic Acid · Salicylic Acid family · PHA support',result:'Refining · Smoother texture'},
-'PGA-PEPTIDE™':{tag:'Firmness & Moisture',title:'PGA-PEPTIDE™',copy:'A firmness and moisture platform combining peptides with polyglutamic acid and adenosine to support resilient-looking skin.',actives:'Peptides · Polyglutamic Acid · Adenosine',result:'Firmness · Long-lasting moisture'}
-};
+window.productCardHTML=function(p){return `<a class="product-card" href="product.html?product=${encodeURIComponent(p.handle)}"><div class="product-media">${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy">`:`<div class="placeholder"><div><strong>${p.name}</strong><br>Product image coming soon</div></div>`}</div><div class="product-meta"><div class="product-type">${p.category} · ${p.solution}</div><div class="product-name">${p.name}</div><div class="product-sub">${p.desc}</div></div></a>`};
+window.renderProductCards=function(target,filter){const el=document.querySelector(target);if(!el)return;const list=ESENCIA_PRODUCTS.filter(p=>!filter||filter(p));el.innerHTML=list.map(productCardHTML).join('')};
+window.renderFeaturedProducts=function(target,handles){const el=document.querySelector(target);if(!el)return;el.innerHTML=handles.map(h=>ESENCIA_PRODUCTS.find(p=>p.handle===h)).filter(Boolean).map(productCardHTML).join('')};
 
-window.renderProductCards=function(target,filter){
-  const el=document.querySelector(target);if(!el)return;
-  const list=window.ESENCIA_PRODUCTS.filter(p=>!filter||filter(p));
-  el.innerHTML=list.map(p=>`<a class="product-card" href="product.html?product=${encodeURIComponent(p.handle)}" data-category="${p.category}">
-    <div class="product-media">${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy">`:`<div class="placeholder"><div><strong>${p.name}</strong><br>Product image coming soon</div></div>`}</div>
-    <div class="product-meta"><div class="product-type">${p.category} · ${p.solution}</div><div class="product-name">${p.name}</div><div class="product-sub">${p.desc}</div></div>
-  </a>`).join('');
-};
+window.initShopPage=function(){const root=document.querySelector('#product-grid');if(!root)return;const params=new URLSearchParams(location.search);let current=params.get('category')||'All';const tabs=[...document.querySelectorAll('[data-product-filter]')];const draw=()=>{tabs.forEach(t=>t.classList.toggle('active',t.dataset.productFilter===current));renderProductCards('#product-grid',p=>current==='All'||p.category===current)};tabs.forEach(t=>t.addEventListener('click',()=>{current=t.dataset.productFilter;history.replaceState(null,'',current==='All'?'shop.html':`shop.html?category=${encodeURIComponent(current)}`);draw()}));draw()};
 
-window.initProductFilters=function(){
-  const tabs=[...document.querySelectorAll('[data-product-filter]')];
-  if(!tabs.length)return;
-  const draw=(category)=>renderProductCards('#product-grid',p=>category==='All'||p.category===category);
-  tabs.forEach(btn=>btn.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));btn.classList.add('active');draw(btn.dataset.productFilter)}));
-  draw('All');
-};
+window.initSolutionsPage=function(){const params=new URLSearchParams(location.search);const selected=params.get('solution');if(!selected||!ESENCIA_SOLUTIONS[selected])return;document.querySelectorAll('[data-solution-card]').forEach(card=>card.style.display=card.dataset.solutionCard===selected?'flex':'none');const title=document.querySelector('[data-solution-title]');const copy=document.querySelector('[data-solution-copy]');if(title)title.textContent=selected;if(copy)copy.textContent=ESENCIA_SOLUTIONS[selected].copy;renderProductCards('#solution-products',p=>p.solution===selected)};
 
-window.initSolutionTabs=function(){
-  const items=[...document.querySelectorAll('[data-solution]')],root=document.querySelector('[data-solution-detail]');
-  if(!items.length||!root)return;
-  const show=(name)=>{const d=ESENCIA_SOLUTIONS[name];items.forEach(x=>x.classList.toggle('active',x.dataset.solution===name));root.innerHTML=`<div><div class="eyebrow" style="color:rgba(255,255,255,.48)">Selected Solution</div><h3>${name}</h3><div class="solution-tech">${d.subtitle} · ${d.tech}</div></div><div><p>${d.copy}</p><a class="btn" style="border-color:rgba(255,255,255,.36);color:#fff" href="#shop" data-filter-jump="${name}">Explore related products</a></div>`;};
-  items.forEach(x=>x.addEventListener('click',()=>show(x.dataset.solution)));
-  show('Hydrating');
-};
+window.initSearchPage=function(){const form=document.querySelector('[data-search-form]'),input=document.querySelector('[data-search-input]'),results=document.querySelector('#search-results'),count=document.querySelector('[data-search-count]');if(!form||!input||!results)return;const params=new URLSearchParams(location.search);input.value=params.get('q')||'';const run=()=>{const q=input.value.trim().toLowerCase();const list=q?ESENCIA_PRODUCTS.filter(p=>[p.name,p.category,p.solution,p.complex,p.desc].join(' ').toLowerCase().includes(q)):[];results.innerHTML=list.map(productCardHTML).join('');if(count)count.textContent=q?`${list.length} results for “${input.value.trim()}”`:'Search products, categories or skin concerns.'};form.addEventListener('submit',e=>{e.preventDefault();history.replaceState(null,'',input.value.trim()?`search.html?q=${encodeURIComponent(input.value.trim())}`:'search.html');run()});run()};
 
-window.initTechnologyTabs=function(){
-  const tabs=[...document.querySelectorAll('[data-tech]')],root=document.querySelector('[data-tech-panel]');
-  if(!tabs.length||!root)return;
-  const show=(key)=>{const d=ESENCIA_TECH[key];tabs.forEach(x=>x.classList.toggle('active',x.dataset.tech===key));root.innerHTML=`<div><div class="tag">${d.tag}</div><h3>${d.title}</h3><p>${d.copy}</p></div><div class="tech-list"><div class="tech-row"><strong>Key actives</strong><span>${d.actives}</span></div><div class="tech-row"><strong>Primary role</strong><span>${d.result}</span></div><div class="tech-row"><strong>Formulation principle</strong><span>Targeted actives · Skin-first balance</span></div></div>`;};
-  tabs.forEach(x=>x.addEventListener('click',()=>show(x.dataset.tech)));
-  show('HYDRA-CERA™');
-};
+window.initMobileMenu=function(){const panel=document.querySelector('.mobile-panel'),open=document.querySelector('[data-menu-open]'),close=document.querySelector('[data-menu-close]');if(!panel||!open||!close)return;const set=s=>{panel.classList.toggle('open',s);document.body.classList.toggle('menu-open',s);open.setAttribute('aria-expanded',s?'true':'false')};open.addEventListener('click',()=>set(true));close.addEventListener('click',()=>set(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>set(false)))};
+window.initNewsletter=function(){document.querySelectorAll('[data-newsletter]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();alert('Newsletter subscription will be connected in Shopify.')}))};
 
-window.initMobileMenu=function(){
-  const panel=document.querySelector('.mobile-panel'),open=document.querySelector('[data-menu-open]'),close=document.querySelector('[data-menu-close]');
-  if(!panel||!open||!close)return;
-  const set=(state)=>{panel.classList.toggle('open',state);document.body.classList.toggle('menu-open',state);open.setAttribute('aria-expanded',state?'true':'false')};
-  open.addEventListener('click',()=>set(true));close.addEventListener('click',()=>set(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>set(false)));
-};
+window.renderPDP=function(){const root=document.querySelector('[data-pdp]');if(!root)return;const params=new URLSearchParams(location.search);const p=ESENCIA_PRODUCTS.find(x=>x.handle===params.get('product'))||ESENCIA_PRODUCTS[0];document.title=`${p.name} — ESEN’CIA`;const related=ESENCIA_PRODUCTS.filter(x=>x.handle!==p.handle&&(x.solution===p.solution||x.category===p.category)).slice(0,4);root.innerHTML=`<a class="back" href="shop.html">← Back to shop</a><div class="product-layout"><div class="pdp-gallery">${p.image?`<img src="${p.image}" alt="${p.name}">`:`<div class="placeholder"><div><strong>${p.name}</strong><br>Product image coming soon</div></div>`}</div><div class="pdp-info"><div class="eyebrow">${p.solution} · ${p.category}</div><h1>${p.name}</h1><div class="pdp-sub">${p.desc}</div><div class="pdp-rule"></div><div class="pdp-label">Complex Technology</div><div class="pdp-value">${p.complex}</div><div class="pdp-rule"></div><div class="pdp-label">Price</div><div class="pdp-price">Connected in Shopify</div><div class="qty"><label class="pdp-label" for="qty">Quantity</label><input id="qty" type="number" min="1" value="1"></div><button class="btn primary" style="width:100%" onclick="alert('Final cart and checkout will run through Shopify.')">Add to Cart</button><div class="shopify-note">GitHub Pages preview · price, inventory, cart and payment will be provided by Shopify.</div></div></div><div class="detail-sections"><div class="detail-row"><h3>Key Benefits</h3><p>${p.benefits}</p></div><div class="detail-row"><h3>Key Ingredients</h3><p>${p.ingredients.join(' · ')}</p></div><div class="detail-row"><h3>How to Use</h3><p>${p.use}</p></div><div class="detail-row"><h3>Recommended For</h3><p>${p.solution} care · ${p.desc}</p></div></div><div class="related"><div class="section-head"><div><div class="eyebrow">Related Products</div><h2>Continue your routine</h2></div></div><div class="product-grid">${related.map(productCardHTML).join('')}</div></div>`};
 
-window.initNewsletter=function(){
-  document.querySelectorAll('[data-newsletter]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();alert('Newsletter subscription will be connected in Shopify.');}));
-};
-
-window.renderPDP=function(){
-  const root=document.querySelector('[data-pdp]');if(!root)return;
-  const params=new URLSearchParams(location.search);const handle=params.get('product');const p=ESENCIA_PRODUCTS.find(x=>x.handle===handle)||ESENCIA_PRODUCTS[0];
-  document.title=`${p.name} — ESEN’CIA`;
-  const related=ESENCIA_PRODUCTS.filter(x=>x.handle!==p.handle&&(x.solution===p.solution||x.category===p.category)).slice(0,4);
-  root.innerHTML=`<a class="back" href="index.html#shop">← Back to shop</a>
-  <div class="product-layout">
-    <div class="pdp-gallery">${p.image?`<img src="${p.image}" alt="${p.name}">`:`<div class="placeholder"><div><strong>${p.name}</strong><br>Product image coming soon</div></div>`}</div>
-    <div class="pdp-info">
-      <div class="eyebrow">${p.solution} · ${p.category}</div><h1>${p.name}</h1><div class="pdp-sub">${p.desc}</div>
-      <div class="pdp-rule"></div><div class="pdp-label">Complex Technology</div><div class="pdp-value">${p.complex}</div>
-      <div class="pdp-rule"></div><div class="pdp-label">Price</div><div class="pdp-price">Connected in Shopify</div>
-      <div class="qty"><label class="pdp-label" for="qty">Quantity</label><input id="qty" type="number" min="1" value="1"></div>
-      <button class="btn primary" style="width:100%" data-preview-cart>ADD TO CART</button>
-      <div class="shopify-note">This GitHub Pages build is the design preview. Final price, inventory, cart and payment will sync from Shopify.</div>
-    </div>
-  </div>
-  <div class="detail-sections">
-    <div class="detail-row"><h3>Key Benefits</h3><p>${p.benefits}</p></div>
-    <div class="detail-row"><h3>Key Ingredients</h3><div class="ingredient-chips">${p.ingredients.map(i=>`<span class="ingredient-chip">${i}</span>`).join('')}</div></div>
-    <div class="detail-row"><h3>Technology</h3><p>${p.complex}</p></div>
-    <div class="detail-row"><h3>How to Use</h3><p>${p.use}</p></div>
-    <div class="detail-row"><h3>Recommended For</h3><p>${p.solution} care · ${p.desc}</p></div>
-  </div>
-  <div class="related"><div class="section-head"><div><div class="eyebrow">Related Care</div><h2>Complete the routine</h2></div></div><div class="product-grid" id="related-grid"></div></div>`;
-  document.querySelector('[data-preview-cart]').addEventListener('click',()=>alert('Add to Cart / Checkout will be activated by Shopify product data.'));
-  const rel=document.querySelector('#related-grid');rel.innerHTML=related.map(x=>`<a class="product-card" href="product.html?product=${x.handle}"><div class="product-media">${x.image?`<img src="${x.image}" alt="${x.name}">`:`<div class="placeholder">${x.name}<br>Image coming soon</div>`}</div><div class="product-meta"><div class="product-type">${x.category} · ${x.solution}</div><div class="product-name">${x.name}</div></div></a>`).join('');
-};
-
-document.addEventListener('DOMContentLoaded',()=>{initMobileMenu();initNewsletter();initSolutionTabs();initTechnologyTabs();});
+document.addEventListener('DOMContentLoaded',()=>{initMobileMenu();initNewsletter()});
