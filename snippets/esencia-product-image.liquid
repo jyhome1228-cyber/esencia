@@ -12,15 +12,21 @@
     when 'clarifying-serum'
       assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070714-image-24-bfee518b.webp'
     when 'brightening-cream'
-      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070715-product-image-5-1-2d1e3a39.webp'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103317-product-image-5-1-e3c287d0.webp'
     when 'night-cream'
-      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070717-product-image-5-2-7bec66fc.webp'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103319-product-image-5-2-cf123eb5.webp'
     when 'pepti-lift-firming-cream'
-      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070719-product-image-5-3-3e6f5601.webp'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103321-product-image-5-3-0f386d9e.webp'
     when 'hydra-cera-cream'
-      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-070721-product-image-5-b6154be6.webp'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103323-product-image-5-d91b62ec.webp'
+    when 'aqua-barrier-toner'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103324-product-image-1-1-1f49d1bf.webp'
+    when 'lipid-comfort-cleanser'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103325-product-image-1-746e1ad0.webp'
+    when 'amino-balance-cleanser'
+      assign fallback_url = 'https://nineworksdatabase.planus253.workers.dev/cdn/uncategorized/20260916-103326-product-image-2-17b55c79.webp'
   endcase
 %}
 {% if fallback_url != blank %}
-  <img src="{{ fallback_url }}" alt="{{ alt | default: handle | escape }}" loading="lazy" width="1200" height="1500">
+  <img src="{{ fallback_url }}" alt="{{ alt | default: handle | escape }}" loading="lazy" width="1200" height="1200">
 {% endif %}
