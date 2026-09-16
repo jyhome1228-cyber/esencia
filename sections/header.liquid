@@ -1,0 +1,25 @@
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">ESEN’CIA</a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/collections/all">SHOP</a>
+      <a href="/pages/skin-solutions">SKIN SOLUTIONS</a>
+      <a href="/pages/science">SCIENCE</a>
+      <a href="/pages/brand">BRAND</a>
+    </nav>
+
+    <div class="site-header__utilities">
+      <a href="{{ routes.search_url }}">Search</a>
+      <a href="{{ routes.account_url }}">Account</a>
+      <a href="{{ routes.cart_url }}">Cart{% if cart.item_count > 0 %} ({{ cart.item_count }}){% endif %}</a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": []
+}
+{% endschema %}
